@@ -1,0 +1,25 @@
+//
+//  JSONDecoder.swift
+//  TMDBProyect
+//
+//  Created by Casa on 24/11/23.
+//
+
+import Foundation
+
+func getJSON<JSON>(request: URLRequest, type: JSON.Type) async throws -> JSON where JSON: Codable {
+    let (data, response) = try await URLSession.shared.getDataCustom(for: request)
+    
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .formatted(.dateFormatCustom)
+    
+    if response.statusCode == 200 {
+        do {
+            return try decoder.decode(type.self, from: data)
+        } catch {
+            throw NetworkError.json(error)
+        }
+    } else {
+        throw NetworkError.status(response.statusCode)
+    }
+}

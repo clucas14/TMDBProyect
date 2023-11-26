@@ -8,17 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var vm = MoviesViewModel()
+    @State private var progress = 0.6
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                ForEach(vm.movies) { movie in
+                    NavigationLink (value: movie) {
+                        MovieCellView(movie: movie)
+                    }
+                }
+            }
+            .navigationTitle("Movies")
+            .navigationDestination(for: Movie.self) { movie in
+                MovieDetailView(movie: movie)
+            }
         }
-        .padding()
+        .environment(\.colorScheme, .dark)
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(vm: .preview)
 }
