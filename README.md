@@ -1,8 +1,8 @@
 
-# MovieDB App
+# TMDBProyect App
 
 ## Descripción
-MovieDB App es una aplicación que permite a los usuarios explorar las películas más populares utilizando la API de [The Movie Database (TMDb)](https://api.themoviedb.org). Los usuarios pueden navegar por un listado de películas populares, y al seleccionar una película, acceder a una vista detallada que incluye información relevante sobre la misma. Además, la aplicación permite compartir la película, ver su tráiler, visitar la web oficial y explorar el reparto en una lista horizontal.
+TMDBProyect App es una aplicación que permite a los usuarios explorar las películas más populares utilizando la API de [The Movie Database (TMDb)](https://api.themoviedb.org). Los usuarios pueden navegar por un listado de películas populares, y al seleccionar una película, acceder a una vista detallada que incluye información relevante sobre la misma. Además, la aplicación permite compartir la película, ver su tráiler, visitar la web oficial y explorar el reparto en una lista horizontal.
 
 
 ## Funcionalidades
@@ -20,7 +20,7 @@ La aplicación hace uso de la API de TMDb para obtener los datos de las películ
 - Detalles de una película específica.
 - Información del reparto y los tráilers.
 
-## **Demo de MovieDB App**
+## **Demo de TMDBProyect App**
 
 https://github.com/user-attachments/assets/15a0dff1-f375-42bd-8f72-242c2d1fe155
 
