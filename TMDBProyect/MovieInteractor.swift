@@ -8,11 +8,12 @@
 import Foundation
 
 protocol MovieInteractorProtocol {
-    func getMovies() async throws -> [Movie]
+    func getMovies(page: Int) async throws -> [Movie]
 }
 
 struct MovieInteractor: MovieInteractorProtocol {
-    func getMovies() async throws -> [Movie] {
-        try await getJSON(request: .getCustom(url: .getPopularMovies), type: MoviesResultDTO.self).results.map(\.toPresentation)
+    func getMovies(page: Int) async throws -> [Movie] {
+//        try await getJSON(request: .getCustom(url: .getPopularMovies), type: MoviesResultDTO.self).results.map(\.toPresentation)
+        try await getJSON(request: .getPaginateMovies(url: .getPopularMovies, page: page), type: MoviesResultDTO.self).results.map(\.toPresentation)
     }
 }

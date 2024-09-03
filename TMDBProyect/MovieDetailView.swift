@@ -8,78 +8,75 @@
 import SwiftUI
 
 struct MovieDetailView: View {
-    var movie: Movie
+    @ObservedObject var movieDetailVM: MovieDetailVM
     
-    var averageColor: Color {
-        switch movie.voteAverage {
-        case 6.5...10:
-                .green
-        case 5..<6.5:
-                .yellow
-        case 0..<5:
-                .red
-        default:
-                .green
-        }
-    }
+    //    var movie: Movie
+    @State var showTrailer = false
     
     var body: some View {
-        let image = URL(string: "https://image.tmdb.org/t/p/w500/")!
-        let imageURL = image.appending(path: movie.posterPath)
         
         ScrollView {
             VStack(alignment: .center) {
-                AsyncImage(url: imageURL) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 250, height: 350)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                } placeholder: {
-                    Image(systemName: "movieclapper")
-                }
-                Text(movie.overview)
+                MoviePosterView(movie: movieDetailVM.selectedMovie, size: .detailPoster)
+                MovieCircleAverageView(movie: movieDetailVM.selectedMovie)
+                //Hacerlo con offset
+                    .padding(.top, -395)
+                    .padding(.leading, 250)
+                Text(movieDetailVM.selectedMovie.overview)
                     .padding(.bottom, 10)
                 HStack() {
                     Text("Date: ")
                         .bold()
-                    + Text(movie.releaseDate, style: .date)
+                    + Text(movieDetailVM.selectedMovie.releaseDate, style: .date)
                     Spacer()
                 }
                 .font(.caption)
-                        ZStack {
-                            Circle()
-                                .stroke(style: StrokeStyle(lineWidth:8, lineCap: .round))
-                                .foregroundColor(Color.black)
-                                .opacity(0.1)
-                                .overlay(
-                                    Circle()
-                                        .trim(from: 0.0, to: movie.voteAverage/10)
-                                        .stroke(style: StrokeStyle(lineWidth:8, lineCap: .round))
-                                        .rotation(.degrees(-90))
-                                        .foregroundColor(averageColor)
-                                    
-                                )
-                                .padding()
-                                .frame(width: 150, height: 150)
-                            Text("\(movie.voteAverage.formatted(.number.precision(.fractionLength(1))))")
-                                .foregroundStyle(averageColor)
-                                .font(.system(size: 45))
-                                .fontWeight(.light)
-                                .bold()
-                        
-                    
+                //                Link("Go to movie", destination: movie.pageMovie)
+                if let _ = movieDetailVM.trailerOfficial {
+                    Button {
+                        showTrailer.toggle()
+                    } label: {
+                        Text("View trailer")
+                    }
+                    .buttonStyle(.bordered)
                 }
+                
+                
+
+                Link(destination: movieDetailVM.selectedMovie.pageMovie) {
+                    Image(systemName: "link")
+                    Text("Go to movie")
+                }
+                .buttonStyle(.bordered)
+                
             }
-            .navigationTitle(movie.title)
-    //        .navigationBarTitleDisplayMode(.inline)
-        .padding()
+            .padding()
+            
+            ScrollView(.horizontal) {
+                LazyHGrid(rows: [GridItem()], content: {
+                    ForEach(movieDetailVM.castCrew) { actor in
+                        CastMemberCellView(castMember: actor)
+                    }
+                })
+            }
+            .navigationTitle(movieDetailVM.selectedMovie.title)
+            //        .navigationBarTitleDisplayMode(.inline)
+        }
+        .sheet(isPresented: $showTrailer, content: {
+            if let keyTrailer = movieDetailVM.trailerOfficial {
+                YouTubePlayer(url: .getYouTubeTrailer(key: keyTrailer))
+            }
+        })
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                ShareLink("share", item: movieDetailVM.selectedMovie.pageMovie)
+            }
         }
     }
 }
 
 #Preview {
     NavigationStack{
-        MovieDetailView(movie: .movieTest)
+        MovieDetailView(movieDetailVM: .preview)
     }
 }
